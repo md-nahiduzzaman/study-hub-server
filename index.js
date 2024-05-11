@@ -96,6 +96,34 @@ async function run() {
       res.send(result);
     });
 
+    // get submitted assignment by status from db
+    app.get("/pending-submission/:status", async (req, res) => {
+      const status = req.params.status;
+      const query = { status: status };
+      const result = await submittedCollection.find(query).toArray();
+      console.log(result);
+      res.send(result);
+    });
+
+    // update submitted assignment data in db
+    app.put("/assignment-result/:id", async (req, res) => {
+      const id = req.params.id;
+      const submittedData = req.body;
+      const query = { _id: new ObjectId(id) };
+      const options = { upsert: true };
+      const updateDoc = {
+        $set: {
+          ...submittedData,
+        },
+      };
+      const result = await submittedCollection.updateOne(
+        query,
+        updateDoc,
+        options
+      );
+      res.send(result);
+    });
+
     // Connect the client to the server	(optional starting in v4.7)
     // await client.connect();
     // Send a ping to confirm a successful connection
