@@ -15,9 +15,6 @@ app.use(
 );
 app.use(express.json());
 
-console.log(process.env.DB_USER);
-console.log(process.env.DB_PASS);
-
 const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@cluster0.w5tdn25.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0`;
 
 // Create a MongoClient with a MongoClientOptions object to set the Stable API version
@@ -54,6 +51,25 @@ async function run() {
     app.post("/assignment", async (req, res) => {
       const assignmentData = req.body;
       const result = await assignmentCollection.insertOne(assignmentData);
+      res.send(result);
+    });
+
+    // update assignment data in db
+    app.put("/update/:id", async (req, res) => {
+      const id = req.params.id;
+      const assignmentData = req.body;
+      const query = { _id: new ObjectId(id) };
+      const options = { upsert: true };
+      const updateDoc = {
+        $set: {
+          ...assignmentData,
+        },
+      };
+      const result = await assignmentCollection.updateOne(
+        query,
+        updateDoc,
+        options
+      );
       res.send(result);
     });
 
