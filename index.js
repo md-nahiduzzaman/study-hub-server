@@ -1,6 +1,6 @@
 const express = require("express");
 const cors = require("cors");
-const { MongoClient, ServerApiVersion } = require("mongodb");
+const { MongoClient, ServerApiVersion, ObjectId } = require("mongodb");
 
 // config
 require("dotenv").config();
@@ -36,7 +36,13 @@ async function run() {
       .collection("assignments");
     const submittedCollection = client.db("studyHub").collection("submitted");
 
-    // save a assignment in db
+    // get all assignment data from db
+    app.get("/assignments", async (req, res) => {
+      const result = await assignmentCollection.find().toArray();
+      res.send(result);
+    });
+
+    // save a assignment data in db
     app.post("/assignment", async (req, res) => {
       const assignmentData = req.body;
       const result = await assignmentCollection.insertOne(assignmentData);
