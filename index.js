@@ -73,6 +73,21 @@ async function run() {
       res.send(result);
     });
 
+    // delete assignment data from db
+    app.delete("/assignment/:id", async (req, res) => {
+      const id = req.params.id;
+      const query = { _id: new ObjectId(id) };
+      const result = await assignmentCollection.deleteOne(query);
+      res.send(result);
+    });
+
+    // save submitted assignment data in db
+    app.post("/submitted-assignment", async (req, res) => {
+      const submittedData = req.body;
+      const result = await submittedCollection.insertOne(submittedData);
+      res.send(result);
+    });
+
     // Connect the client to the server	(optional starting in v4.7)
     // await client.connect();
     // Send a ping to confirm a successful connection
