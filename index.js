@@ -42,6 +42,14 @@ async function run() {
       res.send(result);
     });
 
+    // get single data using id
+    app.get("/assignment/:id", async (req, res) => {
+      const id = req.params.id;
+      const query = { _id: new ObjectId(id) };
+      const result = await assignmentCollection.findOne(query);
+      res.send(result);
+    });
+
     // save a assignment data in db
     app.post("/assignment", async (req, res) => {
       const assignmentData = req.body;
