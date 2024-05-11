@@ -31,10 +31,23 @@ const client = new MongoClient(uri, {
 
 async function run() {
   try {
+    const assignmentCollection = client
+      .db("studyHub")
+      .collection("assignments");
+    const submittedCollection = client.db("studyHub").collection("submitted");
+
+    // save a assignment in db
+    app.post("/assignment", async (req, res) => {
+      const assignmentData = req.body;
+      const result = await assignmentCollection.insertOne(assignmentData);
+      res.send(result);
+    });
+
     // Connect the client to the server	(optional starting in v4.7)
     // await client.connect();
     // Send a ping to confirm a successful connection
     // await client.db("admin").command({ ping: 1 });
+
     console.log(
       "Pinged your deployment. You successfully connected to MongoDB!"
     );
