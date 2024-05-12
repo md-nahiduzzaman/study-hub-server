@@ -17,6 +17,24 @@ app.use(
   })
 );
 app.use(express.json());
+app.use(cookieParser());
+
+// verify jwt token middleware
+const verifyToken = (req, res, next) => {
+  const token = req.cookies?.token;
+  if (!token) return res.status(401).send({ message: "Unauthorized Access" });
+  if (token) {
+    jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, (err, decoded) => {
+      if (err) {
+        console.log(err);
+        return res.status(401).send({ message: "Unauthorized Access" });
+      }
+      console.log(decoded);
+      req.user = decoded;
+      next();
+    });
+  }
+};
 
 const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@cluster0.w5tdn25.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0`;
 
@@ -122,8 +140,12 @@ async function run() {
     });
 
     // get submitted assignment by email from db
-    app.get("/my-submission/:email", async (req, res) => {
+    app.get("/my-submission/:email", verifyToken, async (req, res) => {
+      const tokenEmail = req.user.email;
       const email = req.params.email;
+      if (tokenEmail !== email) {
+        return res.status(403).send({ message: "Forbidden Access" });
+      }
       const query = { email };
       const result = await submittedCollection.find(query).toArray();
       res.send(result);
