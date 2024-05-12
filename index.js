@@ -51,6 +51,18 @@ async function run() {
         .send({ success: true });
     });
 
+    // clear jwt token on logout
+    app.get("/logout", (req, res) => {
+      res
+        .clearCookie("token", {
+          httpOnly: true,
+          secure: process.env.NODE_ENV === "production",
+          sameSite: process.env.NODE_ENV === "production" ? "none" : "strict",
+          maxAge: 0,
+        })
+        .send({ success: true });
+    });
+
     // get all assignment data from db
     app.get("/assignments", async (req, res) => {
       const filter = req.query.filter;
