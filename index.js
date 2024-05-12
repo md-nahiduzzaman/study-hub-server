@@ -35,7 +35,10 @@ async function run() {
 
     // get all assignment data from db
     app.get("/assignments", async (req, res) => {
-      const result = await assignmentCollection.find().toArray();
+      const filter = req.query.filter;
+      let query = {};
+      if (filter) query = { difficultyLevel: filter };
+      const result = await assignmentCollection.find(query).toArray();
       res.send(result);
     });
 
