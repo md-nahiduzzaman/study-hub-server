@@ -104,14 +104,14 @@ async function run() {
     });
 
     // save a assignment data in db
-    app.post("/assignment", async (req, res) => {
+    app.post("/assignment", verifyToken, async (req, res) => {
       const assignmentData = req.body;
       const result = await assignmentCollection.insertOne(assignmentData);
       res.send(result);
     });
 
     // update assignment data in db
-    app.put("/update/:id", async (req, res) => {
+    app.put("/update/:id", verifyToken, async (req, res) => {
       const id = req.params.id;
       const assignmentData = req.body;
       const query = { _id: new ObjectId(id) };
@@ -130,7 +130,7 @@ async function run() {
     });
 
     // delete assignment data from db
-    app.delete("/assignment/:id", async (req, res) => {
+    app.delete("/assignment/:id", verifyToken, async (req, res) => {
       const id = req.params.id;
       const query = { _id: new ObjectId(id) };
       const result = await assignmentCollection.deleteOne(query);
@@ -157,7 +157,7 @@ async function run() {
     });
 
     // get submitted assignment by status from db
-    app.get("/pending-submission/:status", async (req, res) => {
+    app.get("/pending-submission/:status", verifyToken, async (req, res) => {
       const status = req.params.status;
       const query = { status: status };
       const result = await submittedCollection.find(query).toArray();
