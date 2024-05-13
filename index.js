@@ -75,7 +75,7 @@ async function run() {
     });
 
     // clear jwt token on logout
-    app.get("/logout", (req, res) => {
+    app.get("/logout", async (req, res) => {
       res
         .clearCookie("token", {
           httpOnly: true,
