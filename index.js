@@ -148,6 +148,8 @@ async function run() {
     app.get("/my-submission/:email", verifyToken, async (req, res) => {
       const tokenEmail = req.user.email;
       const email = req.params.email;
+      console.log(tokenEmail);
+      console.log(email);
       if (tokenEmail !== email) {
         return res.status(403).send({ message: "Forbidden Access" });
       }
