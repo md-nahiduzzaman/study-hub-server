@@ -58,6 +58,7 @@ async function run() {
       .db("studyHub")
       .collection("assignments");
     const submittedCollection = client.db("studyHub").collection("submitted");
+    const reviewsCollection = client.db("studyHub").collection("reviews");
 
     // jwt generator
     app.post("/jwt", async (req, res) => {
@@ -92,6 +93,12 @@ async function run() {
       let query = {};
       if (filter) query = { difficultyLevel: filter };
       const result = await assignmentCollection.find(query).toArray();
+      res.send(result);
+    });
+
+    // get all reviews data from db
+    app.get("/reviews", async (req, res) => {
+      const result = await reviewsCollection.find().toArray();
       res.send(result);
     });
 
